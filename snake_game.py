@@ -3,6 +3,7 @@ import sys
 import random
 import threading
 from speech_to_text import SpeechToText
+
 # Ekran Boyutları
 WIDTH, HEIGHT = 800, 600
 
@@ -17,6 +18,7 @@ RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 GREY = (128, 128, 128)
+YELLOW = (255, 255, 0)
 
 # Yönler
 UP = (0, -1)
@@ -112,11 +114,24 @@ class SnakeGame:
         self.clock.tick(GAME_SPEED) # Oyun hızını ayarlama
 
     def draw_snake(self):
-        for segment in self.snake: 
-            pygame.draw.rect(self.screen, GREEN, (segment[0], segment[1], SNAKE_BLOCK_SIZE, SNAKE_BLOCK_SIZE)) # Yılanı çizme
+        for i, segment in enumerate(self.snake):
+            pygame.draw.rect(self.screen, BLACK, (segment[0], segment[1], SNAKE_BLOCK_SIZE, SNAKE_BLOCK_SIZE))  # Yılanın karesini siyah ile çizme
+            pygame.draw.rect(self.screen, GREEN, (segment[0] + 2, segment[1] + 2, SNAKE_BLOCK_SIZE - 4, SNAKE_BLOCK_SIZE - 4))  # Yılanın içini yeşil ile çizme
+
+            # Yılanın başındaysak
+            if i == 0:
+                eye = (segment[0] + SNAKE_BLOCK_SIZE - 10, segment[1] + 5)
+                pygame.draw.circle(self.screen, YELLOW, eye, 3) # Yılanın gözünü çizme
+
+                # Yılanın gittiği yöne dil çizgi çizme
+                direction_line_start = (segment[0] + SNAKE_BLOCK_SIZE // 2, segment[1] + SNAKE_BLOCK_SIZE // 2) # Yılanın başının orta noktası
+                direction_line_end = (segment[0] + SNAKE_BLOCK_SIZE // 2 + self.direction[0] * SNAKE_BLOCK_SIZE // 1.5, segment[1] + SNAKE_BLOCK_SIZE // 2 + self.direction[1] * SNAKE_BLOCK_SIZE // 1.5) # Yılanın başının orta noktasından yönün gideceği noktaya doğru çizgi
+                pygame.draw.line(self.screen, RED, direction_line_start, direction_line_end, 3) # Çizgiyi çizme
 
     def draw_food(self):
-        pygame.draw.rect(self.screen, RED, (self.food[0], self.food[1], SNAKE_BLOCK_SIZE, SNAKE_BLOCK_SIZE)) # Yemi çizme
+        pygame.draw.rect(self.screen, RED, (self.food[0], self.food[1], SNAKE_BLOCK_SIZE, SNAKE_BLOCK_SIZE))  # Yemi çizme
+        pygame.draw.rect(self.screen, BLACK, (self.food[0], self.food[1], SNAKE_BLOCK_SIZE, SNAKE_BLOCK_SIZE), 2) # Yemeğin etrafına siyah çizgi çizme
+
 
     def quit_game(self):
         pygame.quit()
